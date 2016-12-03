@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/da1c32084c97d7aea0369a7f5dbe9cb954c8e3b6/empower/empower.d.ts",
+    "raw": "registry:dt/empower#1.2.1+20160924120522",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/da1c32084c97d7aea0369a7f5dbe9cb954c8e3b6/empower/empower.d.ts"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "declaration": false,
+    "module": "amd",
+    "noImplicitAny": false,
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "sourceMap": false,
+    "target": "es5",
+    "outDir": "./dist"
+
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "typings/index.d.ts",
+    "src/entities/index.ts"
+  ]
+}

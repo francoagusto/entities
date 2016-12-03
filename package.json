@@ -1,0 +1,24 @@
+{
+  "name": "entities",
+  "version": "0.0.1",
+  "description": "",
+  "main": "entities.js",
+  "types": "entities.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Franco Barletta",
+  "license": "MIT",
+  "devDependencies": {
+    "bower-webpack-plugin": "^0.1.9",
+    "npm-install-webpack-plugin": "^4.0.4",
+    "tsd": "^0.6.5",
+    "typescript": "^2.0.3",
+    "typings": "^1.4.0",
+    "webpack": "^1.13.2"
+  },
+  "dependencies": {
+    "typescript-collections": "^1.2.3"
+  }
+}
