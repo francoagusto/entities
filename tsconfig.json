@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
     "module": "amd",
     "noImplicitAny": false,
     "preserveConstEnums": true,

@@ -1,19 +1,37 @@
 {
-  "name": "entities",
-  "version": "0.0.1",
-  "description": "",
-  "main": "entities.js",
-  "types": "entities.d.ts",
+  "name": "ts-entities",
+  "version": "0.1.0",
+  "description": "Component system for Typescript",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "bugs": {
+    "url": "https://github.com/francoagusto/entities/issues",
+    "email": "francoabarletta@gmail.com"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "Franco Barletta",
+  "keywords": [
+    "typescript",
+    "entities",
+    "system",
+    "entity",
+    "component",
+    "components",
+    "composite",
+    "game",
+    "oop"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/francoagusto/entities.git"
+  },
+  "author": "Franco Barletta <francoabarletta@gmail.com>",
+  "homepage": "https://github.com/francoagusto/entities",
   "license": "MIT",
   "devDependencies": {
     "bower-webpack-plugin": "^0.1.9",
     "npm-install-webpack-plugin": "^4.0.4",
-    "tsd": "^0.6.5",
     "typescript": "^2.0.3",
     "typings": "^1.4.0",
     "webpack": "^1.13.2"
