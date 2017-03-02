@@ -1,10 +1,10 @@
-import {IComponent} from "IComponent";
-import {IComponentManager} from "IComponentManager";
+import {IComponent} from "./IComponent";
+import {IComponentManager} from "./IComponentManager";
 
 
 export class DefaultComponentManager<T extends IComponent> implements IComponentManager {
 
-    private components:Array<T>;
+    protected components:Array<T>;
 
     constructor() {
         this.components = [];

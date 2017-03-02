@@ -1,5 +1,5 @@
-import {IDestroyable} from "IDestroyable";
-import {IEntity} from "IEntity";
+import {IDestroyable} from "./IDestroyable";
+import {IEntity} from "./IEntity";
 
 export interface IComponent extends IDestroyable
 {

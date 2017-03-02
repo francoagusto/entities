@@ -1,34 +1,38 @@
-import {IEntity} from "IEntity";
-import {IComponent} from "IComponent";
-import {ComponentRegister} from "ComponentRegister";
-import {Dictionary} from "typescript-collections";
+import { IEntity } from "./IEntity";
+import { IComponent } from "./IComponent";
+import { ComponentRegister } from "./ComponentRegister";
+import { Dictionary } from "typescript-collections";
+
+class FunctionWrapper {
+    constructor(public callback: (any) => any, public scope: any) {
+    }
+}
 
 export class Entity implements IEntity {
 
-    public static destroyCallback:string = "destroy";
+    static destroyCallback: string = "destroy";
 
-    private destroyed:boolean;
+    private destroyed: boolean;
 
-
-    private componentsByType:Dictionary<string, IComponent[]> = new Dictionary<string, IComponent[]>();
-
-    private propertiesSettersMap:Dictionary<string, (any)=>void> = new Dictionary<string, (any)=>void>();
-    private propertiesGettersMap:Dictionary<string, ()=>any> = new Dictionary<string, ()=>any>();
-
-    private callbacksMap:Dictionary<string, ()=>void> = new Dictionary<string, ()=>void>();
+    private componentsByType: Dictionary<string, IComponent[]> = new Dictionary<string, IComponent[]>();
+    private callbacksMap: Dictionary<string, FunctionWrapper> = new Dictionary<string, FunctionWrapper>();
+    private refernceMap: Dictionary<string, any> = new Dictionary<string, any>();
 
 
-    constructor(private componentRegister:ComponentRegister = null) {
+    constructor(private componentRegister: ComponentRegister = null) {
         this.registerCallback(Entity.destroyCallback, this.destroy, this);
     }
 
+
+
+
     /* IEntity */
-    public isDestroyed():boolean {
+    isDestroyed(): boolean {
         return this.destroyed;
     }
 
-    public addComponent(component:IComponent):void {
-        var dependencies:Array<any> = component.getDependencies();
+    addComponent(component: IComponent): void {
+        var dependencies: Array<any> = component.getDependencies();
         if (dependencies != null) {
             for (var dependency of dependencies) {
                 if (!this.componentsByType.containsKey(dependency)) {
@@ -38,9 +42,9 @@ export class Entity implements IEntity {
         }
 
 
-        var type:string = component.getType();
+        var type: string = component.getType();
 
-        var components:IComponent[] = this.componentsByType.containsKey(type) ? this.componentsByType.getValue(type) : null;
+        var components: IComponent[] = this.componentsByType.containsKey(type) ? this.componentsByType.getValue(type) : null;
         if (components == null) {
             components = [];
             this.componentsByType.setValue(type, components);
@@ -53,14 +57,14 @@ export class Entity implements IEntity {
         }
     }
 
-    public removeComponent(component:IComponent):void {
+    removeComponent(component: IComponent): void {
         if (this.componentRegister != null) {
             this.componentRegister.unregisterComponent(component);
         }
 
-        var type:string = component.getType();
+        var type: string = component.getType();
 
-        var components:IComponent[] = this.componentsByType.getValue(type);
+        var components: IComponent[] = this.componentsByType.getValue(type);
 
         //remove
         components.splice(components.indexOf(component), 1);
@@ -72,42 +76,31 @@ export class Entity implements IEntity {
     }
 
 
-    public setProperty(name:string, value:any):void {
-        var setterFunction:(any)=>void = this.propertiesSettersMap.getValue(name);
-
-        if (setterFunction != null) {
-            setterFunction(value);
-        }
+	
+	getRegistredReference<T extends Object>(id:string):T {
+        return this.refernceMap.getValue(id);
     }
 
-    public getProperty(name:string):any {
-        var getterFunction:()=>any = this.propertiesGettersMap.getValue(name);
 
-        if (getterFunction != null) {
-            return getterFunction();
+    registerReference<T extends Object>(id:string, propertyReference:T):void {
+        this.refernceMap.setValue(id, propertyReference);
+    }
+
+    registerCallback(id: string, callback: () => void, scope: any): void {
+        this.callbacksMap.setValue(id, new FunctionWrapper(callback, scope));
+    }
+
+    callCallback(id: string, ...args:any[]):any {
+        var functionWrapper: FunctionWrapper = this.callbacksMap.getValue(id);
+
+        if (functionWrapper != null) {
+           return functionWrapper.callback.apply(functionWrapper.scope, args);
         }
         return null;
     }
 
-    public registerProperty(name:string, getter:any, setter:any = null):void {
-        this.propertiesSettersMap.setValue(name, setter);
-        this.propertiesGettersMap.setValue(name, getter);
-    }
-
-    public registerCallback(name:string, callback:()=>void, scope:any):void {
-        this.callbacksMap.setValue(name, callback.bind(scope));
-    }
-
-    public callCallback(name:string):void {
-        var callback:()=>void = this.callbacksMap.getValue(name);
-
-        if (callback != null) {
-            callback();
-        }
-    }
-
-    public destroy():void {
-        var componentsTypes:IComponent[][] = this.componentsByType.values();
+    destroy(): void {
+        var componentsTypes: IComponent[][] = this.componentsByType.values();
 
         for (var components of componentsTypes) {
             for (var component of components) {
@@ -116,9 +109,13 @@ export class Entity implements IEntity {
             }
         }
 
+        this.componentsByType.clear();
         this.componentsByType = null;
-        this.propertiesSettersMap = null;
-        this.propertiesGettersMap = null;
+
+        this.refernceMap.clear();
+        this.refernceMap = null;
+
+        this.callbacksMap.clear();
         this.callbacksMap = null;
 
         this.destroyed = true;

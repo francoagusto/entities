@@ -1,6 +1,6 @@
-import {IComponentManager} from "IComponentManager";
+import {IComponentManager} from "./IComponentManager";
 import {Dictionary} from "typescript-collections";
-import {IComponent} from "IComponent";
+import {IComponent} from "./IComponent";
 
 export class ComponentRegister implements IComponentManager
 {

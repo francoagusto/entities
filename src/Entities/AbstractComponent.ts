@@ -1,11 +1,11 @@
-import {IComponent} from "IComponent";
-import {IDestroyable} from "IDestroyable";
-import {IEntity} from "IEntity";
+import {IComponent} from "./IComponent";
+import {IDestroyable} from "./IDestroyable";
+import {IEntity} from "./IEntity";
 
 export class AbstractComponent implements IComponent, IDestroyable {
 
-    private owner:IEntity;
-    private destroyed:boolean;
+    protected owner:IEntity;
+    protected destroyed:boolean;
 
     constructor() {
     }
