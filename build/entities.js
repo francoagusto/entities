@@ -59,14 +59,20 @@
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, typescript_collections_1) {
 	    "use strict";
+	    var FunctionWrapper = (function () {
+	        function FunctionWrapper(callback, scope) {
+	            this.callback = callback;
+	            this.scope = scope;
+	        }
+	        return FunctionWrapper;
+	    }());
 	    var Entity = (function () {
 	        function Entity(componentRegister) {
 	            if (componentRegister === void 0) { componentRegister = null; }
 	            this.componentRegister = componentRegister;
 	            this.componentsByType = new typescript_collections_1.Dictionary();
-	            this.propertiesSettersMap = new typescript_collections_1.Dictionary();
-	            this.propertiesGettersMap = new typescript_collections_1.Dictionary();
 	            this.callbacksMap = new typescript_collections_1.Dictionary();
+	            this.refernceMap = new typescript_collections_1.Dictionary();
 	            this.registerCallback(Entity.destroyCallback, this.destroy, this);
 	        }
 	        Entity.prototype.isDestroyed = function () {
@@ -99,39 +105,31 @@
 	                this.componentRegister.unregisterComponent(component);
 	            }
 	            var type = component.getType();
-	            assert.ok(!this.componentsByType.containsKey(type), "Entity doesn't have component :" + type);
 	            var components = this.componentsByType.getValue(type);
 	            components.splice(components.indexOf(component), 1);
 	            if (components.length <= 0) {
 	                this.componentsByType.remove(type);
 	            }
 	        };
-	        Entity.prototype.setProperty = function (name, value) {
-	            var setterFunction = this.propertiesSettersMap.getValue(name);
-	            if (setterFunction != null) {
-	                setterFunction(value);
-	            }
+	        Entity.prototype.getRegistredReference = function (id) {
+	            return this.refernceMap.getValue(id);
 	        };
-	        Entity.prototype.getProperty = function (name) {
-	            var getterFunction = this.propertiesGettersMap.getValue(name);
-	            if (getterFunction != null) {
-	                return getterFunction();
+	        Entity.prototype.registerReference = function (id, propertyReference) {
+	            this.refernceMap.setValue(id, propertyReference);
+	        };
+	        Entity.prototype.registerCallback = function (id, callback, scope) {
+	            this.callbacksMap.setValue(id, new FunctionWrapper(callback, scope));
+	        };
+	        Entity.prototype.callCallback = function (id) {
+	            var args = [];
+	            for (var _i = 1; _i < arguments.length; _i++) {
+	                args[_i - 1] = arguments[_i];
+	            }
+	            var functionWrapper = this.callbacksMap.getValue(id);
+	            if (functionWrapper != null) {
+	                return functionWrapper.callback.apply(functionWrapper.scope, args);
 	            }
 	            return null;
-	        };
-	        Entity.prototype.registerProperty = function (name, getter, setter) {
-	            if (setter === void 0) { setter = null; }
-	            this.propertiesSettersMap.setValue(name, setter);
-	            this.propertiesGettersMap.setValue(name, getter);
-	        };
-	        Entity.prototype.registerCallback = function (name, callback, scope) {
-	            this.callbacksMap.setValue(name, callback.bind(scope));
-	        };
-	        Entity.prototype.callCallback = function (name) {
-	            var callback = this.callbacksMap.getValue(name);
-	            if (callback != null) {
-	                callback();
-	            }
 	        };
 	        Entity.prototype.destroy = function () {
 	            var componentsTypes = this.componentsByType.values();
@@ -143,9 +141,11 @@
 	                    component.destroy();
 	                }
 	            }
+	            this.componentsByType.clear();
 	            this.componentsByType = null;
-	            this.propertiesSettersMap = null;
-	            this.propertiesGettersMap = null;
+	            this.refernceMap.clear();
+	            this.refernceMap = null;
+	            this.callbacksMap.clear();
 	            this.callbacksMap = null;
 	            this.destroyed = true;
 	        };
